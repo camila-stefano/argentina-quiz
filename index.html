@@ -323,6 +323,13 @@
         stroke-opacity: 1;
         stroke-width: 2px;
       }
+      /* Buenos Aires City question: after answering, the circle turns green if right, red if wrong */
+      .caba[data-result="ok"] {
+        fill: var(--ok);
+      }
+      .caba[data-result="bad"] {
+        fill: var(--bad);
+      }
       /* Footer: pushed to the bottom of the viewport when the content is short */
       .site-footer {
         margin-top: auto;
@@ -369,7 +376,7 @@
         outline-offset: 2px;
         border-radius: 4px;
       }
-      .caba-halo {
+      .city-halo {
         fill: var(--surface);
         stroke: none;
         pointer-events: none;
@@ -909,6 +916,8 @@
           return -1;
         }
         // i = best answer, also = other provinces that count as correct.
+        // Buenos Aires City sits on the Río de la Plata coast
+        var CABA_AT = [461, 446];
         var Q = [
           {
             t: "Where is Buenos Aires, the capital? Look for the small circle.",
@@ -1015,20 +1024,17 @@
           $("photo-cap").textContent = "";
         }
 
-        // Buenos Aires City sits on the Río de la Plata coast
-        var CABA_AT = [461, 446];
         var MARK_AT = {
           Salta: [290, 125],
           "Buenos Aires City (CABA)": CABA_AT,
         };
-        // White ring behind the CABA circle so it stands out from the province around it
-        function cabaHalo() {
-          var r = document.createElementNS(NS, "circle");
-          r.setAttribute("cx", CABA_AT[0]);
-          r.setAttribute("cy", CABA_AT[1]);
-          r.setAttribute("r", 12);
-          r.setAttribute("class", "caba-halo");
-          return r;
+        function circle(at, r, cls) {
+          var el = document.createElementNS(NS, "circle");
+          el.setAttribute("cx", at[0]);
+          el.setAttribute("cy", at[1]);
+          el.setAttribute("r", r);
+          el.setAttribute("class", cls);
+          return el;
         }
 
         var $ = function (id) {
@@ -1097,14 +1103,12 @@
           svg.appendChild(el);
           els[i] = el;
         });
-        // Buenos Aires City: small circle with a larger invisible hit area
+        // Buenos Aires City: small circle with a white ring and a larger invisible hit area, always visible
+        var cabaHalo = circle(CABA_AT, 12, "city-halo");
+        var cabaHit = circle(CABA_AT, 18, "hit");
         (function () {
           var i = pid("Buenos Aires City (CABA)");
-          var c = document.createElementNS(NS, "circle");
-          c.setAttribute("cx", CABA_AT[0]);
-          c.setAttribute("cy", CABA_AT[1]);
-          c.setAttribute("r", 9);
-          c.setAttribute("class", "prov caba");
+          var c = circle(CABA_AT, 9, "prov caba");
           c.setAttribute("data-region", "pampas");
           c.setAttribute("tabindex", "0");
           c.setAttribute("role", "button");
@@ -1115,15 +1119,10 @@
               answer(i);
             }
           });
-          var h = document.createElementNS(NS, "circle");
-          h.setAttribute("cx", CABA_AT[0]);
-          h.setAttribute("cy", CABA_AT[1]);
-          h.setAttribute("r", 18);
-          h.setAttribute("class", "hit");
-          wire(h, i);
-          svg.appendChild(cabaHalo());
+          wire(cabaHit, i);
+          svg.appendChild(cabaHalo);
           svg.appendChild(c);
-          svg.appendChild(h);
+          svg.appendChild(cabaHit);
           els[i] = c;
         })();
         var markGood = document.createElementNS(NS, "text");
@@ -1145,6 +1144,7 @@
           svg.classList.remove("locked");
           els.forEach(function (el) {
             el.removeAttribute("data-state");
+            el.removeAttribute("data-result");
           });
           markGood.textContent = "";
           markBad.textContent = "";
@@ -1179,6 +1179,13 @@
           }
           els[right].setAttribute("data-state", "correct");
           svg.appendChild(els[right]);
+          // Keep Buenos Aires City above a highlighted Buenos Aires Province
+          svg.appendChild(cabaHalo);
+          svg.appendChild(els[pid("Buenos Aires City (CABA)")]);
+          svg.appendChild(cabaHit);
+          if (right === pid("Buenos Aires City (CABA)")) {
+            els[right].setAttribute("data-result", ok ? "ok" : "bad");
+          }
           svg.appendChild(markGood);
           svg.appendChild(markBad);
           placeMark(markGood, right, "✓");
@@ -1327,20 +1334,11 @@
             a.setAttribute("rel", "noopener noreferrer");
             a.setAttribute("aria-label", p.n + " (opens in a new tab)");
             if (p.n.indexOf("CABA") !== -1) {
-              var c = document.createElementNS(NS, "circle");
-              c.setAttribute("cx", CABA_AT[0]);
-              c.setAttribute("cy", CABA_AT[1]);
-              c.setAttribute("r", 9);
-              c.setAttribute("class", "prov caba");
+              var c = circle(CABA_AT, 9, "prov caba");
               c.setAttribute("data-region", p.g);
-              var h2 = document.createElementNS(NS, "circle");
-              h2.setAttribute("cx", CABA_AT[0]);
-              h2.setAttribute("cy", CABA_AT[1]);
-              h2.setAttribute("r", 16);
-              h2.setAttribute("class", "hit");
-              a.appendChild(cabaHalo());
+              a.appendChild(circle(CABA_AT, 12, "city-halo"));
               a.appendChild(c);
-              a.appendChild(h2);
+              a.appendChild(circle(CABA_AT, 16, "hit"));
               var t0 = document.createElementNS(NS, "text");
               t0.setAttribute("class", "lbl start");
               t0.setAttribute("font-size", 14);

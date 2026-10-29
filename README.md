@@ -8,3 +8,6 @@ Single static page (`index.html`), no build step.
 Open `index.html` in a browser.
 
 ## See GitHub Pages
+
+## Photo credits
+Photos come from [argentina.travel](https://www.argentina.travel), the official tourism site.
