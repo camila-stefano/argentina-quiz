@@ -16,7 +16,7 @@
     --line: #D3DFEB;
     --accent: #1D6DB4;
     --accent-text: #FFFFFF;
-    --sun: #F2B01E;
+    --sun: #F6B40E;
     --ok: #1C8A4B;
     --bad: #C23B3B;
     --sea: #E3EEF8;
@@ -39,7 +39,7 @@
       --line: #28405A;
       --accent: #5FA8E8;
       --accent-text: #0E1A26;
-      --sun: #F2B01E;
+      --sun: #F6B40E;
       --ok: #52C98B;
       --bad: #F07A7A;
       --sea: #112233;
@@ -59,7 +59,7 @@
     --line: #28405A;
     --accent: #5FA8E8;
     --accent-text: #0E1A26;
-    --sun: #F2B01E;
+    --sun: #F6B40E;
     --ok: #52C98B;
     --bad: #F07A7A;
     --sea: #112233;
@@ -95,6 +95,20 @@
     height: 8px; border-radius: 4px; margin-bottom: 22px;
     background: linear-gradient(90deg, #74ACDF 0 33.3%, #FFFFFF 33.3% 66.6%, #74ACDF 66.6% 100%);
     border: 1px solid var(--line);
+    position: relative;
+  }
+  /* Sol de Mayo, centered on the white band: rays (::before) behind the disc (::after) */
+  .stripe::before, .stripe::after {
+    content: ""; position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%); border-radius: 50%;
+  }
+  .stripe::before {
+    width: 24px; height: 24px;
+    background: repeating-conic-gradient(var(--sun) 0 9deg, transparent 9deg 22.5deg);
+  }
+  .stripe::after {
+    width: 12px; height: 12px;
+    background: var(--sun); border: 1px solid #843511;
   }
   .lede { color: var(--muted); margin: 14px 0 26px; max-width: 46ch; }
   label { display: block; font-weight: 700; margin-bottom: 6px; }
@@ -308,11 +322,11 @@
   // Photos from the official tourism site, argentina.travel.
   var PHOTO_SRC = [
     "images/buenos-aires.jpg", "images/iguazu-falls.jpg", "images/perito-moreno.jpg", "images/el-chalten.jpg",
-    "images/bariloche.jpg", "images/mendoza-aconcagua.jpg", "images/seven-colors-purmamarca.jpg",
+    "images/bariloche.jpg", "images/mendoza-vineyards.jpg", "images/seven-colors-purmamarca.jpg",
     "images/train-to-the-clouds.jpg", "images/ushuaia.jpg", "images/peninsula-valdes.jpg"
   ];
   // Shown under the photo after the player answers.
-  var CAPTIONS = ["Buenos Aires City", "Iguazú Falls, Misiones", "Perito Moreno Glacier, Santa Cruz", "El Chaltén, Santa Cruz", "Bariloche, Río Negro", "Aconcagua, Mendoza","Hill of Seven Colors, Jujuy", "Train to the Clouds, Salta", "Ushuaia, Tierra del Fuego", "Península Valdés, Chubut"];
+  var CAPTIONS = ["Caminito, La Boca, Buenos Aires City", "Devil’s Throat, Iguazú Falls, Misiones", "Perito Moreno Glacier, Santa Cruz", "Mount Fitz Roy, El Chaltén, Santa Cruz", "Civic Center, Bariloche, Río Negro", "Vineyards and the Andes, Mendoza","Hill of Seven Colors, Purmamarca, Jujuy", "Train to the Clouds on La Polvorilla viaduct, Salta", "Les Eclaireurs Lighthouse, Ushuaia, Tierra del Fuego", "Southern right whale, Península Valdés, Chubut"];
   Q.forEach(function (q, k) { q.img = PHOTO_SRC[k]; q.cap = CAPTIONS[k]; });
 
   function setPhoto(q) {
