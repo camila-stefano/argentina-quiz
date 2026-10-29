@@ -367,7 +367,7 @@
       .photo-frame {
         width: 100%;
         aspect-ratio: 16 / 10;
-        max-height: 210px;
+        max-height: min(420px, 55vh);
         border-radius: 12px;
         overflow: hidden;
         border: 1px solid var(--line);
@@ -398,8 +398,10 @@
         min-height: 1.4em;
       }
       .feedback {
-        min-height: 7.4em;
         margin-top: 6px;
+      }
+      .feedback:empty {
+        display: none;
       }
       .feedback .verdict {
         font-weight: 800;
@@ -504,6 +506,25 @@
       .explore .note {
         margin-top: 8px;
       }
+      /* Wide screens: results on the left, explore map on the right, sized to fit the viewport */
+      @media (min-width: 800px) {
+        #screen-end {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          column-gap: 32px;
+          align-items: start;
+        }
+        .explore {
+          margin-top: 0;
+          padding-top: 0;
+          border-top: 0;
+        }
+        .xmap {
+          width: auto;
+          max-width: 100%;
+          height: max(420px, calc(100vh - 260px));
+        }
+      }
       @media (prefers-reduced-motion: reduce) {
         .prov {
           transition: none;
@@ -577,20 +598,22 @@
 
       <!-- End -->
       <section id="screen-end" class="hidden">
-        <h2 id="end-title">Nice work</h2>
-        <div class="score-big">
-          <span id="final">0</span><small> / 10</small>
-        </div>
-        <p id="end-msg" class="lede" style="margin-top: 8px"></p>
-        <label for="result">Your result</label>
-        <div class="share">
-          <input id="result" type="text" readonly />
-          <button class="btn" id="copy">Copy result</button>
-        </div>
-        <p class="note" id="copy-note"></p>
-        <div class="row">
-          <button class="btn ghost" id="again">Play again</button>
-          <button class="btn ghost" id="newplayer">Next player</button>
+        <div class="end-main">
+          <h2 id="end-title">Nice work</h2>
+          <div class="score-big">
+            <span id="final">0</span><small> / 10</small>
+          </div>
+          <p id="end-msg" class="lede" style="margin-top: 8px"></p>
+          <label for="result">Your result</label>
+          <div class="share">
+            <input id="result" type="text" readonly />
+            <button class="btn" id="copy">Copy result</button>
+          </div>
+          <p class="note" id="copy-note"></p>
+          <div class="row">
+            <button class="btn ghost" id="again">Play again</button>
+            <button class="btn ghost" id="newplayer">Next player</button>
+          </div>
         </div>
 
         <div class="explore">
@@ -913,7 +936,7 @@
         function show(which) {
           for (var k in screens)
             screens[k].classList.toggle("hidden", k !== which);
-          wrapEl.classList.toggle("wide", which === "play");
+          wrapEl.classList.toggle("wide", which !== "start");
           window.scrollTo(0, 0);
         }
 
