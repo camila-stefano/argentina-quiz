@@ -304,10 +304,15 @@
       f: "Home to Península Valdés, one of South America’s top marine wildlife sanctuaries. See southern right whales from June to December, plus Magellanic penguins and sea lions near Puerto Madryn." }
   ];
 
-  // PHOTOS: same order as Q above. Replace null with an image source (a data: URI) to show a photo.
-  var PHOTO_SRC = [null, null, null, null, null, null, null, null, null, null];
+  // PHOTOS: same order as Q above. Use null to show the placeholder instead.
+  // Photos from the official tourism site, argentina.travel.
+  var PHOTO_SRC = [
+    "images/buenos-aires.jpg", "images/iguazu-falls.jpg", "images/perito-moreno.jpg", "images/el-chalten.jpg",
+    "images/bariloche.jpg", "images/mendoza-aconcagua.jpg", "images/seven-colors-purmamarca.jpg",
+    "images/train-to-the-clouds.jpg", "images/ushuaia.jpg", "images/peninsula-valdes.jpg"
+  ];
   // Shown under the photo after the player answers.
-  var CAPTIONS = ["Buenos Aires City", "Iguazú Falls, Misiones", "Perito Moreno Glacier, Santa Cruz", "El Chaltén, Santa Cruz", "Bariloche, Río Negro", "Mendoza", "Hill of Seven Colors, Jujuy", "Train to the Clouds, Salta", "Ushuaia, Tierra del Fuego", "Península Valdés, Chubut"];
+  var CAPTIONS = ["Buenos Aires City", "Iguazú Falls, Misiones", "Perito Moreno Glacier, Santa Cruz", "El Chaltén, Santa Cruz", "Bariloche, Río Negro", "Aconcagua, Mendoza","Hill of Seven Colors, Jujuy", "Train to the Clouds, Salta", "Ushuaia, Tierra del Fuego", "Península Valdés, Chubut"];
   Q.forEach(function (q, k) { q.img = PHOTO_SRC[k]; q.cap = CAPTIONS[k]; });
 
   function setPhoto(q) {
