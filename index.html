@@ -306,8 +306,13 @@
         stroke-width: 4px;
       }
       .caba {
-        stroke-opacity: 0.9;
-        stroke-width: 1.5px;
+        stroke-opacity: 1;
+        stroke-width: 2px;
+      }
+      .caba-halo {
+        fill: var(--surface);
+        stroke: none;
+        pointer-events: none;
       }
       .hit {
         fill: transparent;
@@ -753,7 +758,7 @@
             cy: 656,
           },
           Chubut: {
-            d: "M301,716 L295,718 L293,721 L294,725 L285,731 L288,735 L287,739 L291,743 L303,741 L307,736 L307,727ZM58,846 L65,854 L185,853 L193,841 L206,827 L211,827 L221,820 L228,818 L243,818 L243,809 L253,802 L257,796 L255,792 L257,784 L254,778 L254,771 L268,755 L278,751 L280,748 L263,739 L267,734 L275,730 L277,725 L276,722 L267,719 L260,713 L63,713 L58,718 L49,720 L48,724 L50,730 L47,734 L47,746 L51,751 L59,755 L59,758 L55,760 L54,763 L63,771 L59,776 L62,781 L57,789 L57,794 L60,797 L71,797 L78,801 L73,812 L65,810 L58,814 L66,820 L72,829 L68,832 L66,837 L59,839Z",
+            d: "M58,846 L65,854 L185,853 L193,841 L206,827 L211,827 L221,820 L228,818 L243,818 L243,809 L253,802 L257,796 L255,792 L257,784 L254,778 L254,771 L268,755 L278,751 L280,748 L263,739 L267,734 L275,730 L281,730 L285,731 L288,735 L287,739 L291,743 L303,741 L307,736 L307,727 L301,716 L295,718 L293,721 L294,725 L286,728 L281,727 L277,725 L276,722 L267,719 L260,713 L63,713 L58,718 L49,720 L48,724 L50,730 L47,734 L47,746 L51,751 L59,755 L59,758 L55,760 L54,763 L63,771 L59,776 L62,781 L57,789 L57,794 L60,797 L71,797 L78,801 L73,812 L65,810 L58,814 L66,820 L72,829 L68,832 L66,837 L59,839Z",
             cx: 156,
             cy: 776,
           },
@@ -763,7 +768,7 @@
             cy: 953,
           },
           "Tierra del Fuego": {
-            d: "M156,1111 L156,1164 L161,1165 L167,1163 L179,1166 L189,1165 L208,1168 L219,1172 L222,1170 L231,1170 L234,1167 L252,1167 L256,1163 L257,1160 L254,1157 L234,1157 L217,1150 L213,1146 L193,1137 L185,1130 L181,1129 L172,1119 L170,1113 L166,1111Z",
+            d: "M156,1111 L156,1164 L161,1165 L167,1163 L179,1166 L189,1165 L208,1168 L219,1172 L222,1170 L231,1170 L234,1167 L252,1167 L256,1163 L257,1160 L254,1157 L234,1157 L217,1150 L213,1146 L193,1137 L185,1130 L181,1129 L172,1119 L170,1113 L166,1111ZM268,1160 L284,1161 L296,1161 L294,1164 L281,1166 L268,1164Z",
             cx: 190,
             cy: 1148,
           },
@@ -910,10 +915,21 @@
           $("photo-cap").textContent = "";
         }
 
+        // Buenos Aires City sits on the Río de la Plata coast
+        var CABA_AT = [461, 446];
         var MARK_AT = {
           Salta: [290, 125],
-          "Buenos Aires City (CABA)": [452, 430],
+          "Buenos Aires City (CABA)": CABA_AT,
         };
+        // White ring behind the CABA circle so it stands out from the province around it
+        function cabaHalo() {
+          var r = document.createElementNS(NS, "circle");
+          r.setAttribute("cx", CABA_AT[0]);
+          r.setAttribute("cy", CABA_AT[1]);
+          r.setAttribute("r", 12);
+          r.setAttribute("class", "caba-halo");
+          return r;
+        }
 
         var $ = function (id) {
           return document.getElementById(id);
@@ -985,8 +1001,8 @@
         (function () {
           var i = pid("Buenos Aires City (CABA)");
           var c = document.createElementNS(NS, "circle");
-          c.setAttribute("cx", 452);
-          c.setAttribute("cy", 430);
+          c.setAttribute("cx", CABA_AT[0]);
+          c.setAttribute("cy", CABA_AT[1]);
           c.setAttribute("r", 9);
           c.setAttribute("class", "prov caba");
           c.setAttribute("data-region", "pampas");
@@ -1000,11 +1016,12 @@
             }
           });
           var h = document.createElementNS(NS, "circle");
-          h.setAttribute("cx", 452);
-          h.setAttribute("cy", 430);
+          h.setAttribute("cx", CABA_AT[0]);
+          h.setAttribute("cy", CABA_AT[1]);
           h.setAttribute("r", 18);
           h.setAttribute("class", "hit");
           wire(h, i);
+          svg.appendChild(cabaHalo());
           svg.appendChild(c);
           svg.appendChild(h);
           els[i] = c;
@@ -1211,16 +1228,17 @@
             a.setAttribute("aria-label", p.n + " (opens in a new tab)");
             if (p.n.indexOf("CABA") !== -1) {
               var c = document.createElementNS(NS, "circle");
-              c.setAttribute("cx", 452);
-              c.setAttribute("cy", 430);
+              c.setAttribute("cx", CABA_AT[0]);
+              c.setAttribute("cy", CABA_AT[1]);
               c.setAttribute("r", 9);
               c.setAttribute("class", "prov caba");
               c.setAttribute("data-region", p.g);
               var h2 = document.createElementNS(NS, "circle");
-              h2.setAttribute("cx", 452);
-              h2.setAttribute("cy", 430);
+              h2.setAttribute("cx", CABA_AT[0]);
+              h2.setAttribute("cy", CABA_AT[1]);
               h2.setAttribute("r", 16);
               h2.setAttribute("class", "hit");
+              a.appendChild(cabaHalo());
               a.appendChild(c);
               a.appendChild(h2);
               var t0 = document.createElementNS(NS, "text");
@@ -1228,8 +1246,8 @@
               t0.setAttribute("font-size", 14);
               ["Buenos Aires", "City (CABA)"].forEach(function (ln, k) {
                 var s = document.createElementNS(NS, "tspan");
-                s.setAttribute("x", 472);
-                s.setAttribute("y", 432 + k * 15);
+                s.setAttribute("x", CABA_AT[0] + 18);
+                s.setAttribute("y", CABA_AT[1] + 2 + k * 15);
                 s.textContent = ln;
                 t0.appendChild(s);
               });
