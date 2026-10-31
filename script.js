@@ -164,8 +164,9 @@
   var Q = [
     {
       t: "Where is Buenos Aires, the capital?",
-      i: pid("Buenos Aires City (CABA)"),
-      also: [pid("Buenos Aires Province")],
+      // Answer is the province; the CABA circle only shows where the city is, after answering
+      i: pid("Buenos Aires Province"),
+      city: true,
       f: "The cultural heart of the country, with European-style architecture, tango, and historic neighborhoods like San Telmo and La Boca. Don’t miss Plaza de Mayo, the Teatro Colón and the old cafés and bookstores.",
     },
     {
@@ -269,7 +270,6 @@
 
   var MARK_AT = {
     Salta: [290, 125],
-    "Buenos Aires City (CABA)": CABA_AT,
   };
   function circle(at, r, cls) {
     var el = document.createElementNS(NS, "circle");
@@ -417,7 +417,7 @@
     svg.appendChild(els[right]);
     // Buenos Aires question: reveal the city circle above the highlighted province,
     // green if the answer was right, red if not
-    if (right === pid("Buenos Aires City (CABA)")) {
+    if (q.city) {
       cabaDot.setAttribute("data-result", ok ? "ok" : "bad");
       svg.appendChild(cabaHalo);
       svg.appendChild(cabaDot);
@@ -438,6 +438,12 @@
     if (ok && i !== right)
       d.textContent =
         "The best answer is " + p.n + ", but " + P[i].n + " counts too.";
+    else if (q.city)
+      d.textContent =
+        "Buenos Aires City (CABA) is the circle on the coast of Buenos Aires Province, in the " +
+        REGIONS[p.g] +
+        " region." +
+        (ok ? "" : " The province is outlined in green.");
     else
       d.textContent =
         "It’s in " +
